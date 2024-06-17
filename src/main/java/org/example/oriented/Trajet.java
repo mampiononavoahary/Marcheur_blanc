@@ -1,47 +1,53 @@
 package org.example.oriented;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+// Trajet.java
 public class Trajet {
     private Carte carte;
-    private Lieu currentLocation;
+    private Lieu start;
 
-    public Trajet(Carte carte, Lieu currentLocation) {
+    public Trajet(Carte carte, Lieu start) {
         this.carte = carte;
-        this.currentLocation = currentLocation;
+        this.start = start;
     }
 
     public List<Lieu> marcheAleatoire(Lieu destination, Marcheur marcheur) {
         List<Lieu> chemin = new ArrayList<>();
-        chemin.add(currentLocation);
+        chemin.add(start);
+        if (trouverChemin(start, destination, chemin, new HashSet<>())) {
+            return chemin;
+        } else {
+            return Collections.emptyList();  // Si aucun chemin n'est trouvé
+        }
+    }
 
-        Random random = new Random();
-        Set<Lieu> visites = new HashSet<>();
-        visites.add(currentLocation);
-
-        Lieu[] previousLocation = { null };
-
-        while (!currentLocation.equals(destination)) {
-            List<Rue> ruesPossibles = new ArrayList<>(carte.getRuesFromLieu(currentLocation));
-            if (previousLocation[0] != null) {
-                final Lieu prevLocation = previousLocation[0];
-                ruesPossibles.removeIf(rue -> {
-                    Lieu nextLieu = rue.getStart().equals(currentLocation) ? rue.getEnd() : rue.getStart();
-                    return nextLieu.equals(prevLocation);
-                });
-            }
-
-            if (ruesPossibles.isEmpty()) {
-                break;
-            }
-
-            Rue rueChoisie = ruesPossibles.get(random.nextInt(ruesPossibles.size()));
-            previousLocation[0] = currentLocation;
-            currentLocation = rueChoisie.getStart().equals(currentLocation) ? rueChoisie.getEnd() : rueChoisie.getStart();
-            chemin.add(currentLocation);
-            visites.add(currentLocation);
+    private boolean trouverChemin(Lieu current, Lieu destination, List<Lieu> chemin, Set<Lieu> visites) {
+        if (current.equals(destination)) {
+            return true;
         }
 
-        return chemin;
+        visites.add(current);
+        List<Rue> options = carte.getRues().stream()
+                .filter(rue -> rue.getStart().equals(current) || rue.getEnd().equals(current))
+                .collect(Collectors.toList());
+
+        Collections.shuffle(options);  // Pour introduire un aspect aléatoire
+
+        for (Rue rue : options) {
+            Lieu next = rue.getStart().equals(current) ? rue.getEnd() : rue.getStart();
+            if (!visites.contains(next)) {
+                chemin.add(next);
+                if (trouverChemin(next, destination, chemin, visites)) {
+                    return true;
+                }
+                chemin.remove(chemin.size() - 1);  // Backtracking
+            }
+        }
+
+        visites.remove(current);
+        return false;
     }
 }
+

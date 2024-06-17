@@ -3,7 +3,6 @@ package org.example.oriented;
 import java.util.*;
 import java.util.stream.Collectors;
 
-// Trajet.java
 public class Trajet {
     private Carte carte;
     private Lieu start;

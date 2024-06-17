@@ -15,19 +15,21 @@ public class Main {
         Lieu Nexta = new Lieu("Nexta");
         Lieu Sekolintsika = new Lieu("Sekolintsika");
         Lieu Marais = new Lieu("Marais");
+        Lieu Boulevard = new Lieu("Boulevard");
 
         Rue rue1 = new Rue("Andriatsihoarana", HEI, Pullman);
         Rue rue2 = new Rue("Ranaivo", Pullman, Balançoire);
         Rue rue3 = new Rue(null, Balançoire, ESTI);
-        Rue rue4 = new Rue(null, Pullman, ESTI);
         Rue rue5 = new Rue(null,Pullman,Nexta);
         Rue rue6 =new Rue(null,HEI,Balançoire);
         Rue rue7 =new Rue(null,HEI,Sekolintsika);
         Rue rue8 = new Rue(null,Sekolintsika,Marais);
+        Rue rue9 = new Rue(null,Balançoire,Boulevard);
+        Rue rue10 = new Rue(null,Boulevard,ESTI);
 
         Carte carte = Carte.builder()
                 .lieux(Arrays.asList(HEI, Pullman, Balançoire, ESTI))
-                .rues(Arrays.asList(rue1, rue2, rue3, rue4, rue5, rue6, rue7, rue8))
+                .rues(Arrays.asList(rue1, rue2, rue3, rue5, rue6, rue7, rue8, rue9, rue10))
                 .build();
 
         Marcheur bjarni = new Marcheur("Bjarni");
